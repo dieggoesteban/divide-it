@@ -1,0 +1,39 @@
+{
+  "participants": [
+    {
+      "name": "Mayra",
+      "total": 0,
+      "id": 1
+    },
+    {
+      "name": "Diego",
+      "total": 0,
+      "id": 2
+    },
+    {
+      "name": "Gonzalo",
+      "total": 0,
+      "id": 3
+    },
+    {
+      "name": "Susana",
+      "total": 0,
+      "id": 4
+    },
+    {
+      "name": "Aldana",
+      "total": 0,
+      "id": 5
+    },
+    {
+      "name": "Gabriel",
+      "total": 0,
+      "id": 6
+    },
+    {
+      "name": "Mariana",
+      "total": 0,
+      "id": 7
+    }
+  ]
+}
