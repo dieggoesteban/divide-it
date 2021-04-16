@@ -1,20 +1,10 @@
 import React from "react";
 import formatMoney from "../common/utils";
+import { getTotal } from "../core/participants";
 
 const TotalAccount = ({ participants }) => {
-  const getTotal = () => {
-    return participants.map((p) => parseFloat(p.monto)).reduce((acc, p) => acc + p);
-  };
-
-  return (
-    <>
-      {participants.length > 0 ? (
-        <h2>Total: ${formatMoney(getTotal())}</h2>
-      ) : (
-        <h2>${formatMoney(0)}</h2>
-      )}
-    </>
-  );
+    const total = getTotal(participants);
+    return <h2>${formatMoney(total)}</h2>;
 };
 
 export default TotalAccount;
