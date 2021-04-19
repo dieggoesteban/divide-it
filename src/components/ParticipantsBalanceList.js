@@ -8,6 +8,7 @@ const ParticipantsBalanceList = ({ participants, total, totalIndividual }) => {
                 participants.map((participant) => {
                     return (
                         <ParticipantBalanceSummary
+                            key={participant.id}
                             participant={participant}
                             total={total}
                             totalIndividual={totalIndividual}

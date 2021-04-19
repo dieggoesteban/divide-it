@@ -5,12 +5,22 @@ const participantInitialState = [
     {
         id: 1,
         name: "Diego",
-        monto: 1550,
+        monto: 462.5,
     },
     {
         id: 2,
+        name: "Aldana",
+        monto: 0.0,
+    },
+    {
+        id: 3,
+        name: "Gonzalo",
+        monto: 3562.25,
+    },
+    {
+        id: 4,
         name: "Mayra",
-        monto: 2300,
+        monto: 1505.0,
     },
 ];
 
@@ -25,12 +35,12 @@ export const participantReducer = (state = participantInitialState, action = {})
     }
 };
 
-export const idCounterReducer = (state = 3, action = {}) => {
+export const idCounterReducer = (state = 5, action = {}) => {
     switch (action.type) {
         case constants.INCREMENT_IDCOUNTER:
             return state + 1;
         case constants.RESET_IDCOUNTER:
-            return 3;
+            return 1;
         default:
             return state;
     }

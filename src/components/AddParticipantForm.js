@@ -14,7 +14,7 @@ const AddParticipantForm = ({ participantNameRef }) => {
     const _onSubmit = (e) => {
         e.preventDefault();
 
-        let participant = { id: idCounter, name: name, monto: monto };
+        let participant = { id: idCounter, name: name, monto: parseFloat(monto) };
         dispatch(addParticipant(participant));
         dispatch(incrementIdCounter());
 

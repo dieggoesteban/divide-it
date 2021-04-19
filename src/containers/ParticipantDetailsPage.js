@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import ParticipantSummary from "../components/ParticipantSummary";
 import { useHistory } from "react-router-dom";
 

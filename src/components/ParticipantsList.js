@@ -8,7 +8,7 @@ const ParticipantsList = ({ participants }) => {
 
             {participants.length > 0 ? (
                 participants.map((participant) => {
-                    return <ParticipantSummary participant={participant} />;
+                    return <ParticipantSummary key={participant.id} participant={participant} />;
                 })
             ) : (
                 <h4>Aún no hay participantes.</h4>
