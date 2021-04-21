@@ -42,7 +42,7 @@ const ResultsPage = () => {
             ) : (
                 <h4>Aún no hay participantes</h4>
             )}
-            {total > 0 ? (
+            {total > 0 && participants.length > 1 ? (
                 <>
                     <hr />
                     <SuggestedTransactionsList transactions={suggestedTransactions} />

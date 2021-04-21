@@ -4,7 +4,7 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 
 const SuggestedTransaction = ({ transaction }) => {
     return (
-        <div className="participant transaction">
+        <div className="transaction">
             <h4>{transaction.from.name}</h4>
             <ArrowForwardIcon />
             <h4 className="value neutral-value">${formatMoney(transaction.amount)}</h4>

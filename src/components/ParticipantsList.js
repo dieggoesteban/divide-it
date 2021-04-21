@@ -1,9 +1,11 @@
 import React from "react";
+import EditParticipantForm from "./EditParticipantForm";
 import ParticipantSummary from "./ParticipantSummary";
 
 const ParticipantsList = ({ participants }) => {
     return (
         <section className="participants-list">
+            <EditParticipantForm />
             <h2>Participantes: </h2>
 
             {participants.length > 0 ? (

@@ -7,6 +7,16 @@ export const addParticipant = (participant) => ({
     payload: participant,
 });
 
+export const removeParticipant = (participant) => ({
+    type: constants.REMOVE_PARTICIPANT,
+    payload: participant,
+});
+
+export const updateParticipant = (participant) => ({
+    type: constants.UPDATE_PARTICIPANT,
+    payload: participant,
+});
+
 export const clearParticipants = () => ({
     type: constants.CLEAR_PARTICIPANTS,
 });
@@ -19,4 +29,15 @@ export const incrementIdCounter = () => ({
 
 export const resetIdCounter = () => ({
     type: constants.RESET_IDCOUNTER,
+});
+
+//Edit participant modal
+
+export const showEditParticipantsModal = (participantToEdit) => ({
+    type: constants.SHOW_EDIT_PARTICIPANT_MODAL,
+    payload: participantToEdit,
+});
+
+export const hideEditParticipantsModal = () => ({
+    type: constants.HIDE_EDIT_PARTICIPANT_MODAL,
 });

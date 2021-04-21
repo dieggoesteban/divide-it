@@ -25,6 +25,7 @@ body {
     max-width: 500px;
     display: grid;
     padding: 25px;
+    margin: auto;
 }
 
 header {
@@ -157,13 +158,27 @@ hr {
 }
 
 .participant-summary {
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 15px;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
 }
 
 .participant-summary > .value {
     margin-left: 10px;
+}
+
+.participant-balance {
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .negative-value {
@@ -183,6 +198,9 @@ hr {
 }
 
 .transaction {
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
     justify-content: space-around;

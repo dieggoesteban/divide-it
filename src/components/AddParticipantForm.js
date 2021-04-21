@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addParticipant, incrementIdCounter } from "../actions";
 
 const AddParticipantForm = ({ participantNameRef }) => {
-    //const participantsRedux = useSelector((state) => state.participants);
+    const participants = useSelector((state) => state.participants);
     const idCounter = useSelector((state) => state.idCounter);
     const dispatch = useDispatch();
 
@@ -13,6 +13,11 @@ const AddParticipantForm = ({ participantNameRef }) => {
 
     const _onSubmit = (e) => {
         e.preventDefault();
+
+        if (participants.find((participant) => participant.name === name)) {
+            alert("Ya existe un participante con ese nombre");
+            return;
+        }
 
         let participant = { id: idCounter, name: name, monto: parseFloat(monto) };
         dispatch(addParticipant(participant));
