@@ -1,28 +1,7 @@
 import * as constants from "./constants";
 import { combineReducers } from "redux";
 
-const participantInitialState = [
-    {
-        id: 1,
-        name: "Diego",
-        monto: 462.5,
-    },
-    {
-        id: 2,
-        name: "Aldana",
-        monto: 0.0,
-    },
-    {
-        id: 3,
-        name: "Gonzalo",
-        monto: 3562.25,
-    },
-    {
-        id: 4,
-        name: "Mayra",
-        monto: 1505.0,
-    },
-];
+const participantInitialState = [];
 
 export const participantReducer = (state = participantInitialState, action = {}) => {
     switch (action.type) {
@@ -42,7 +21,7 @@ export const participantReducer = (state = participantInitialState, action = {})
     }
 };
 
-export const idCounterReducer = (state = 5, action = {}) => {
+export const idCounterReducer = (state = 1, action = {}) => {
     switch (action.type) {
         case constants.INCREMENT_IDCOUNTER:
             return state + 1;

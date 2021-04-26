@@ -49,6 +49,7 @@ const AddParticipantForm = ({ participantNameRef }) => {
                     onChange={(e) => setMonto(e.target.value)}
                     type="text"
                     value={monto}
+                    helperText="Decimales con punto (.)"
                     fullWidth
                     required
                 />
