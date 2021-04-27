@@ -14,11 +14,11 @@ const ParticipantBalanceSummary = ({ participant, total, totalIndividual }) => {
         <div className="participant-balance">
             <h3>{participant.name}:</h3>
             {balance > 0 ? (
-                <h4 className="value positive-value">${formatMoney(balance)}</h4>
+                <h4 className="value positive-value">+ ${formatMoney(balance)}</h4>
             ) : balance == 0 ? (
                 <h4 className="value neutral-value">${formatMoney(balance)}</h4>
             ) : (
-                <h4 className="value negative-value">${formatMoney(balance)}</h4>
+                <h4 className="value negative-value">- ${formatMoney(balance)}</h4>
             )}
         </div>
     );
