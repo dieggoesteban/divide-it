@@ -36,10 +36,15 @@ header {
     margin-bottom: 10px;
 }
 
+.footer {
+    text-align: center;
+    margin-top: 1em;
+}
+
 .header-app-description {
     margin-top: 0.8em;
     text-align: justify;
-    text-align: left;
+    text-align: center;
 }
 
 hr {

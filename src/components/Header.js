@@ -1,12 +1,15 @@
-import React from 'react'
+import React from "react";
 
 const Header = () => {
     return (
         <header>
             <h1>Divide It</h1>
-            <p className="header-app-description">Pequeña app que permite dividir los gastos de una compra, indicando quien le debe a quien (y cuanto)</p>
+            <p className="header-app-description">
+                Divido los gastos de una compra conjunta en partes iguales y te recomiendo quien
+                debe transferir dinero a quien y cuanto!
+            </p>
         </header>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;

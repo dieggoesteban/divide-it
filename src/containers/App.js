@@ -5,6 +5,7 @@ import HomePage from "./HomePage";
 import ResultsPage from "./ResultsPage";
 import NotFoundPage from "./NotFoundPage";
 import ParticipantDetailsPage from "./ParticipantDetailsPage";
+import Footer from "../components/Footer";
 
 const App = () => {
     return (
@@ -16,6 +17,7 @@ const App = () => {
                 <Route path="/participant/:id" component={ParticipantDetailsPage} />
                 <Route component={NotFoundPage} />
             </Switch>
+            <Footer />
         </div>
     );
 };

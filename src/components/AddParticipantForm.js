@@ -2,6 +2,7 @@ import { Box, Button, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addParticipant, incrementIdCounter } from "../actions";
+import MoneyInput from "./reusable/MoneyInput";
 
 const AddParticipantForm = ({ participantNameRef }) => {
     const participants = useSelector((state) => state.participants);
@@ -43,13 +44,12 @@ const AddParticipantForm = ({ participantNameRef }) => {
                 />
             </Box>
             <Box mb={2}>
-                <TextField
-                    label="Monto"
-                    variant="filled"
+                <MoneyInput
                     onChange={(e) => setMonto(e.target.value)}
-                    type="text"
+                    label="Monto"
                     value={monto}
-                    helperText="Decimales con punto (.)"
+                    variant="filled"
+                    helperText="Decimales con coma (,)"
                     fullWidth
                     required
                 />
