@@ -19,6 +19,8 @@ const NumberFormatCustom = ({ inputRef, onChange, ...other }) => {
                 decimalSeparator=","
                 thousandSeparator="."
                 prefix="$"
+                inputMode="decimal"
+                pattern="[0-9],*"
                 isNumericString
             />
         </>
