@@ -13,14 +13,14 @@ function App() {
     const dispatch = useDispatch();
 
     const participantNameRef = React.useRef();
-    const participantNameFocus = () => {
+    /*const participantNameFocus = () => {
         participantNameRef.current.focus();
-    };
+    };*/
 
     const resetApp = () => {
         dispatch(clearParticipants());
         dispatch(resetIdCounter());
-        participantNameFocus();
+        //participantNameFocus();
     };
 
     return (

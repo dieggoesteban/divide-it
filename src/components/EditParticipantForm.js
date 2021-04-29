@@ -3,12 +3,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { hideEditParticipantsModal, updateParticipant } from "../actions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import MoneyInput from "./reusable/MoneyInput";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 const EditParticipantForm = () => {
+    const participants = useSelector((state) => state.participants);
+
     const initialParticipantState = {
         name: "",
         monto: 0,
@@ -32,6 +35,18 @@ const EditParticipantForm = () => {
 
     const handleUpdateParticipant = (e) => {
         e.preventDefault();
+
+        if (
+            participants.find(
+                (participant) =>
+                    participant.name === currentParticipant.name &&
+                    participant.id !== modal.targetParticipant.id
+            )
+        ) {
+            alert("Ya existe un participante con ese nombre");
+            return;
+        }
+
         const data = {
             name: currentParticipant.name,
             monto: currentParticipant.monto,
@@ -66,13 +81,21 @@ const EditParticipantForm = () => {
                         defaultValue={currentParticipant.name}
                         fullWidth
                     />
-                    <TextField
+                    {/* <TextField
                         autoFocus
                         margin="dense"
                         id="monto"
                         name="monto"
                         label="Monto"
                         type="text"
+                        onChange={handleInputChange}
+                        defaultValue={currentParticipant.monto}
+                        fullWidth
+                    /> */}
+                    <MoneyInput
+                        id="monto"
+                        name="monto"
+                        label="Monto"
                         onChange={handleInputChange}
                         defaultValue={currentParticipant.monto}
                         fullWidth

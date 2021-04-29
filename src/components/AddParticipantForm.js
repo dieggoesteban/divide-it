@@ -40,7 +40,6 @@ const AddParticipantForm = ({ participantNameRef }) => {
                     inputRef={participantNameRef}
                     fullWidth
                     required
-                    autoFocus
                 />
             </Box>
             <Box mb={2}>

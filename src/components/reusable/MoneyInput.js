@@ -3,15 +3,16 @@ import { TextField } from "@material-ui/core";
 import PropTypes from "prop-types";
 import NumberFormat from "react-number-format";
 
-const NumberFormatCustom = ({ inputRef, onChange, ...other }) => {
+const NumberFormatCustom = ({ inputRef, onChange, name, ...other }) => {
     return (
         <>
             <NumberFormat
                 {...other}
-                ref={inputRef}
+                getInputRef={inputRef}
                 onValueChange={(values) => {
                     onChange({
                         target: {
+                            name: name,
                             value: values.value,
                         },
                     });
@@ -20,7 +21,6 @@ const NumberFormatCustom = ({ inputRef, onChange, ...other }) => {
                 thousandSeparator="."
                 prefix="$"
                 inputMode="decimal"
-                pattern="[0-9],*"
                 isNumericString
             />
         </>
@@ -29,21 +29,15 @@ const NumberFormatCustom = ({ inputRef, onChange, ...other }) => {
 
 NumberFormatCustom.propTypes = {
     inputRef: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-const MoneyInput = ({ onChange, value, label, variant, helperText, fullWidth, required }) => {
+const MoneyInput = ({ ...other }) => {
     return (
         <>
             <TextField
-                label={label}
-                variant={variant}
-                onChange={onChange}
-                value={value}
-                type="text"
-                helperText={helperText}
-                fullWidth={fullWidth}
-                required={required}
+                {...other}
                 InputProps={{
                     inputComponent: NumberFormatCustom,
                 }}
