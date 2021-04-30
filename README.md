@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-#The idea
+# The idea
 
 This application aims to solve a very common problem when we are making a group purchase (one or various items) and we need to divide the expenses in equal parts between the participants involved. 
 
@@ -8,6 +8,10 @@ This application aims to solve a very common problem when we are making a group 
 
 A group of friends organize a dinner and each one of them it has the responsability to bring something, one could bring the drinks, another friend the meat, another the vegetables, and so on. Each participants spend an X amount of money in the part that was assigned to him. After the dinner, it's time to "equalize" the expenses into equal parts. Very easy, we sum all the expenses from each participants and divide by the participants quantity. Nothing too complicated, the participants that has debit balance (have to pay to achieve the individual calculated amount (ICA), in other words, who owes money) makes a transaction to the participant who exceeds the ICA. 
 The thing gets tedious when there is more than one participant that has credit balance (the money he spent, exceeds the ICA). You have to split the debt of each participant to satisfy the participants credits. Nothing too complicated, but it's a calculation that no one wants to do.
+
+### Live Demo
+
+https://divide-it-b2349.web.app/
 
 ### What this app offers
 
@@ -20,7 +24,7 @@ The thing gets tedious when there is more than one participant that has credit b
 - Suggests the shortest way to equate expenses between participants indicating who have to transfer to whom and the amount of said transaction
 
 
-##Motivation and expectations
+## Motivation and expectations
 
 This app it is made by myself along my front-end development learning. Technologies involved:
 
