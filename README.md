@@ -1,70 +1,37 @@
-# Getting Started with Create React App
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# The idea
 
-In the project directory, you can run:
+This application aims to solve a very common problem when we are making a group purchase (one or various items) and we need to divide the expenses in equal parts between the participants involved. 
 
-### `npm start`
+### A practical example
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+A group of friends organize a dinner and each one of them it has the responsability to bring something, one could bring the drinks, another friend the meat, another the vegetables, and so on. Each participants spend an X amount of money in the part that was assigned to him. After the dinner, it's time to "equalize" the expenses into equal parts. Very easy, we sum all the expenses from each participants and divide by the participants quantity. Nothing too complicated, the participants that has debit balance (have to pay to achieve the individual calculated amount (ICA), in other words, who owes money) makes a transaction to the participant who exceeds the ICA. 
+The thing gets tedious when there is more than one participant that has credit balance (the money he spent, exceeds the ICA). You have to split the debt of each participant to satisfy the participants credits. Nothing too complicated, but it's a calculation that no one wants to do.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Live Demo
 
-### `npm test`
+https://divide-it-b2349.web.app/
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### What this app offers
 
-### `npm run build`
+##### The app gives you the possibility of:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Enter the data of total expenses of each participant
+- Compute the total amount
+- Compute the ICA (individual calculated amount)
+- See the balance of each participant (it is a debtor or a creditor?)
+- Suggests the shortest way to equate expenses between participants indicating who have to transfer to whom and the amount of said transaction
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Motivation and expectations
 
-### `npm run eject`
+This app it is made by myself along my front-end development learning. Technologies involved:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Javascript ES6
+- React
+- React Router
+- Redux
+- Material UI
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+In the future, in the short and medium term, I want to apply concepts of testing UI before adding new features and an API REST in the back-end.
