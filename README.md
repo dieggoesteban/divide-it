@@ -1,50 +1,54 @@
-# React + TypeScript + Vite
+# divide-it
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, robust, and modern static frontend application built with React and TypeScript.
 
-Currently, two official plugins are available:
+## The Idea
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This application simplifies the process of splitting expenses for group purchases or shared activities, ensuring costs are divided equally among all participants. It solves the common problem of "who owes whom" after a shared event.
 
-## Expanding the ESLint configuration
+## A Practical Example
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Imagine a group of friends organizing a dinner. One brings drinks, another brings meat, another vegetables, and so on. Each participant spends a different amount.
 
-- Configure the top-level `parserOptions` property like this:
+After dinner, it's time to settle up. The process is straightforward in theory: sum all expenses and divide by the number of participants to find the "fair share" or Individual Calculated Amount (ICA).
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+*   Participants who spent **less** than the ICA have a **debit balance** (they owe money).
+*   Participants who spent **more** than the ICA have a **credit balance** (they are owed money).
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+The calculation becomes tedious when there are multiple debtors and creditors. You have to figure out how to split the payments so everyone gets reimbursed correctly. While not complex math, it's a chore that this app automates for you.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## What this app offers
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+*   **Expense Entry**: Easily input the total expenses for each participant.
+*   **Automatic Calculation**: Instantly computes the total group expense and the Individual Calculated Amount (ICA).
+*   **Balance Visualization**: Clearly shows each participant's balance—whether they are a debtor or a creditor.
+*   **Smart Settlement**: Suggests the most efficient way to settle debts, indicating exactly who needs to pay whom and how much to minimize the number of transactions.
+
+## Live Demo
+
+Check out the live application here: [https://divide-it-b2349.web.app/](https://divide-it-b2349.web.app/)
+
+## Philosophy
+
+- **Keep it simple and robust**: We prioritize maintainability and simplicity.
+- **Modern & Secure**: Built with the latest industry best practices.
+- **Dependency Minimalism**: We only use what we strictly need.
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- shadcn/ui
+- Tailwind CSS
+
+## Getting Started
+
+1.  Clone the repository.
+2.  Install dependencies: `npm install`
+3.  Run the development server: `npm run dev`
+
+## Documentation
+
+- [Constitution](.specify/memory/constitution.md)
+- [Changelog](CHANGELOG.md)
