@@ -1,6 +1,13 @@
+export interface Item {
+  id: string;
+  description: string;
+  amount: number;
+}
+
 export interface Participant {
   id: string;
   name: string;
+  items: Item[];
   amount: number;
   netAmount?: number;
 }
@@ -14,7 +21,11 @@ export interface Transaction {
 export const getTotal = (participants: Participant[]): number => {
   if (participants.length > 0) {
     return participants
-      .map((p) => (typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount))
+      .map((p) => {
+        // Ensure amount is a number and consistent with items if present
+        const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
+        return amount;
+      })
       .reduce((acc, p) => acc + p, 0);
   } else {
     return 0;

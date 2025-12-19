@@ -5,8 +5,9 @@ import { formatMoney } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, List } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 interface ParticipantSummaryProps {
   participant: Participant;
@@ -47,7 +48,14 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
       <Card className="mb-2">
         <CardContent className="flex justify-between items-center p-4">
           <div>
-            <h3 className="font-bold text-lg">{participant.name}</h3>
+            <h3 className="font-bold text-lg flex items-center gap-2">
+              <Link to={`/participant/${participant.id}`} className="hover:underline flex items-center gap-2">
+                {participant.name}
+                {participant.items && participant.items.length > 0 && (
+                  <List className="h-4 w-4 text-muted-foreground" />
+                )}
+              </Link>
+            </h3>
             <p className="text-gray-600">${formatMoney(participant.amount)}</p>
           </div>
           <div className="flex gap-2">
