@@ -10,6 +10,7 @@
 ### Session 2024-12-20
 - Q: ¿Dónde se debe ubicar la selección de participantes para un item? → A: **En Formulario de Edición**: Integrar la lista de checkboxes dentro del diálogo existente de Crear/Editar Item (ItemManagerDialog) para mantener consistencia y simplicidad.
 - Q: ¿Cómo visualizar en el listado que un item tiene exclusiones? → A: **Indicador Compacto**: Mostrar un icono o texto breve (ej. "👥 2/3") junto al monto del item para alertar de la configuración especial sin saturar.
+- Q: ¿Es necesario el selector de participantes en el formulario de "Agregar Item"? → A: **No, eliminarlo**. Genera confusión con la configuración global. El flujo será: Agregar item (por defecto todos participan) -> Editar participantes en el listado si es necesario.
 
 ## Contexto del Problema
 

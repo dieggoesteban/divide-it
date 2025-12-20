@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Item, Participant } from '@/core/participants';
-import { Trash2, Plus, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { Trash2, Plus, Users } from 'lucide-react';
 
 interface ItemManagerProps {
   items: Item[];
@@ -19,8 +19,6 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
-  const [excludedParticipantIds, setExcludedParticipantIds] = useState<string[]>([]);
-  const [showParticipantSelection, setShowParticipantSelection] = useState(false);
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
 
   const handleAddItem = () => {
@@ -35,40 +33,20 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
       return;
     }
 
-    // Validate at least one participant is included (when participants exist)
-    if (participants.length > 0) {
-      const includedCount = participants.length - excludedParticipantIds.length;
-      if (includedCount === 0) {
-        setError('Debe haber al menos un participante incluido.');
-        return;
-      }
-    }
-
     const newItem: Item = {
       id: crypto.randomUUID(),
       description: description.trim(),
       amount: amountValue,
-      excludedParticipantIds: excludedParticipantIds.length > 0 ? [...excludedParticipantIds] : undefined,
     };
 
     onItemsChange([...items, newItem]);
     setDescription('');
     setAmount('');
-    setExcludedParticipantIds([]);
-    setShowParticipantSelection(false);
     setError('');
   };
 
   const handleRemoveItem = (id: string) => {
     onItemsChange(items.filter((item) => item.id !== id));
-  };
-
-  const handleToggleParticipant = (participantId: string) => {
-    setExcludedParticipantIds((prev) =>
-      prev.includes(participantId)
-        ? prev.filter((id) => id !== participantId)
-        : [...prev, participantId]
-    );
   };
 
   const handleToggleItemParticipant = (itemId: string, participantId: string) => {
@@ -103,7 +81,6 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
 
   const total = items.reduce((sum, item) => sum + item.amount, 0);
   const hasParticipants = participants.length > 0;
-  const includedCountForNewItem = participants.length - excludedParticipantIds.length;
 
   return (
     <div className="space-y-4 py-4">
@@ -141,47 +118,7 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
         </Button>
       </div>
 
-      {/* Participant Selection for New Item */}
-      {hasParticipants && (
-        <div className="space-y-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="w-full justify-between text-muted-foreground"
-            onClick={() => setShowParticipantSelection(!showParticipantSelection)}
-          >
-            <span className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Participantes: {includedCountForNewItem}/{participants.length}
-            </span>
-            {showParticipantSelection ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </Button>
-          
-          {showParticipantSelection && (
-            <div className="border rounded-md p-2 space-y-1 bg-muted/50">
-              {participants.map((p) => (
-                <label
-                  key={p.id}
-                  className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted p-1 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={!excludedParticipantIds.includes(p.id)}
-                    onChange={() => handleToggleParticipant(p.id)}
-                    className="rounded"
-                  />
-                  <span>{p.name}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {/* Participant Selection for New Item - REMOVED */}
       
       {error && <p className="text-sm text-red-500">{error}</p>}
 
