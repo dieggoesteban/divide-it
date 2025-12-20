@@ -2,6 +2,7 @@ export interface Item {
   id: string;
   description: string;
   amount: number;
+  excludedParticipantIds?: string[]; // IDs of participants who do NOT share this expense
 }
 
 export interface Participant {
@@ -10,6 +11,7 @@ export interface Participant {
   items: Item[];
   amount: number;
   netAmount?: number;
+  fairShare?: number; // What this participant should have paid (their debt/quota)
 }
 
 export interface Transaction {
@@ -45,13 +47,67 @@ export const getNetAmount = (participant: Participant, totalIndividual: number):
   return amount - totalIndividual;
 };
 
+/**
+ * Calculates fairShare (what each participant should pay) and netAmount (balance)
+ * considering item exclusions.
+ * 
+ * New Logic:
+ * - For each item, split its cost among non-excluded participants
+ * - Accumulate "fairShare" (what one should have paid) for each participant
+ * - netAmount = paidAmount - fairShare
+ */
 export const getParticipantsWithNetAmountCalc = (participants: Participant[]): Participant[] => {
-  const totalIndividual = getTotalIndividual(participants);
-  // Deep copy to avoid mutating the original array if needed, though map is cleaner
+  if (participants.length === 0) {
+    return [];
+  }
+
+  // Deep copy to avoid mutating the original array
   const participantsEdited: Participant[] = JSON.parse(JSON.stringify(participants));
   
+  // Initialize fairShare for all participants
   participantsEdited.forEach((p) => {
-    p.netAmount = getNetAmount(p, totalIndividual);
+    p.fairShare = 0;
+  });
+
+  // Get all participant IDs for reference
+  const allParticipantIds = participantsEdited.map(p => p.id);
+
+  // Collect all items from all participants
+  const allItems: { item: Item; ownerId: string }[] = [];
+  participantsEdited.forEach((p) => {
+    p.items.forEach((item) => {
+      allItems.push({ item, ownerId: p.id });
+    });
+  });
+
+  // Calculate fairShare for each item
+  allItems.forEach(({ item }) => {
+    const excludedIds = item.excludedParticipantIds || [];
+    
+    // Get participants who share this item (not excluded)
+    const includedParticipantIds = allParticipantIds.filter(id => !excludedIds.includes(id));
+    
+    if (includedParticipantIds.length === 0) {
+      // This should not happen if validation is in place, but handle gracefully
+      return;
+    }
+
+    // Calculate cost per included participant
+    const costPerParticipant = item.amount / includedParticipantIds.length;
+
+    // Add to each included participant's fairShare
+    includedParticipantIds.forEach((participantId) => {
+      const participant = participantsEdited.find(p => p.id === participantId);
+      if (participant) {
+        participant.fairShare = (participant.fairShare || 0) + costPerParticipant;
+      }
+    });
+  });
+
+  // Calculate netAmount for each participant: paid - fairShare
+  participantsEdited.forEach((p) => {
+    const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
+    p.netAmount = amount - (p.fairShare || 0);
   });
   
   return participantsEdited;

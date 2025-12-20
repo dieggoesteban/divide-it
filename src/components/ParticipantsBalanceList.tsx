@@ -5,10 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ParticipantsBalanceListProps {
   participants: Participant[];
-  totalIndividual: number;
 }
 
-const ParticipantsBalanceList: React.FC<ParticipantsBalanceListProps> = ({ participants, totalIndividual }) => {
+const ParticipantsBalanceList: React.FC<ParticipantsBalanceListProps> = ({ participants }) => {
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -20,7 +19,6 @@ const ParticipantsBalanceList: React.FC<ParticipantsBalanceListProps> = ({ parti
             <ParticipantBalanceSummary
               key={participant.id}
               participant={participant}
-              totalIndividual={totalIndividual}
             />
           ))
         ) : (

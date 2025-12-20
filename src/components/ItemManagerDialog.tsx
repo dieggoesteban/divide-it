@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Item } from '@/core/participants';
+import { Item, Participant } from '@/core/participants';
 import { ItemManager } from '@/components/ItemManager';
 
 interface ItemManagerDialogProps {
@@ -10,6 +10,7 @@ interface ItemManagerDialogProps {
   initialItems: Item[];
   onSave: (items: Item[]) => void;
   title?: string;
+  participants?: Participant[];
 }
 
 export const ItemManagerDialog: React.FC<ItemManagerDialogProps> = ({
@@ -18,6 +19,7 @@ export const ItemManagerDialog: React.FC<ItemManagerDialogProps> = ({
   initialItems,
   onSave,
   title = 'Gestionar Items',
+  participants = [],
 }) => {
   const [items, setItems] = useState<Item[]>(initialItems);
 
@@ -40,7 +42,7 @@ export const ItemManagerDialog: React.FC<ItemManagerDialogProps> = ({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
-        <ItemManager items={items} onItemsChange={setItems} />
+        <ItemManager items={items} onItemsChange={setItems} participants={participants} />
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

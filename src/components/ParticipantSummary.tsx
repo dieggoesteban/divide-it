@@ -14,7 +14,7 @@ interface ParticipantSummaryProps {
 }
 
 const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) => {
-  const { dispatch } = useParticipants();
+  const { state, dispatch } = useParticipants();
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(participant.name);
   const [editAmount, setEditAmount] = useState(participant.amount.toString());
@@ -116,7 +116,7 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
 
             <div className="border-t pt-4">
               <h4 className="text-sm font-medium mb-2">Desglose de Gastos</h4>
-              <ItemManager items={editItems} onItemsChange={handleItemsChange} />
+              <ItemManager items={editItems} onItemsChange={handleItemsChange} participants={state.participants} />
             </div>
           </div>
           <DialogFooter>

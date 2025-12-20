@@ -1,18 +1,24 @@
 import React from 'react';
-import { Participant, getNetAmount } from '@/core/participants';
+import { Participant } from '@/core/participants';
 import { formatMoney, cn } from '@/lib/utils';
 
 interface ParticipantBalanceSummaryProps {
   participant: Participant;
-  totalIndividual: number;
 }
 
-const ParticipantBalanceSummary: React.FC<ParticipantBalanceSummaryProps> = ({ participant, totalIndividual }) => {
-  const balance = getNetAmount(participant, totalIndividual);
+const ParticipantBalanceSummary: React.FC<ParticipantBalanceSummaryProps> = ({ participant }) => {
+  // Use pre-calculated netAmount from participant (considers item exclusions)
+  const balance = participant.netAmount || 0;
+  const fairShare = participant.fairShare || 0;
 
   return (
     <div className="flex justify-between items-center p-2 border-b last:border-0">
-      <h3 className="font-medium">{participant.name}:</h3>
+      <div>
+        <h3 className="font-medium">{participant.name}</h3>
+        <p className="text-xs text-muted-foreground">
+          Pagó: ${formatMoney(participant.amount)} | Cuota: ${formatMoney(fairShare)}
+        </p>
+      </div>
       <h4
         className={cn(
           "font-bold",

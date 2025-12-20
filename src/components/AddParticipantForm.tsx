@@ -124,6 +124,7 @@ const AddParticipantForm = () => {
           initialItems={getInitialItemsForDialog()}
           onSave={handleItemsSave}
           title={`Gastos de ${name || 'Participante'}`}
+          participants={state.participants}
         />
       </CardContent>
     </Card>
