@@ -11,8 +11,14 @@
 - Q: ¿Qué sucede si el usuario ingresa un monto negativo en un item? → A: **Prohibir negativos**: Solo se permiten gastos positivos.
 - Q: ¿Cómo se debe diseñar la interfaz de edición de items? → A: **Modal/Popup**: Botón "Editar" en la página de detalles abre un diálogo con el formulario completo.
 - Q: ¿Cómo se identifica cada item de forma única para permite su edición y eliminación? → A: **ID Único**: Generar un identificador único (ej. UUID o contador interno) para cada item.
-- Q: ¿Dónde se deben mostrar los items desglosados de un participante? → A: **Solo en Página de Detalles**: Items visibles al acceder a ParticipantDetailsPage, la lista principal muestra solo nombre y total.
+- Q: ¿Dónde se deben mostrar los items desglosados de un participante? → A: **En el diálogo de edición**: Se unificó la vista de detalles y edición en un único popup para mejorar la UX. La página de detalles fue eliminada.
 - Q: ¿Cómo se debe estructurar el modelo de datos? ¿Se requiere migración? → A: **Array Vacío**: Todos los participantes tienen `items: []`. App es stateless, sin persistencia ni cálculos legacy.
+
+### Session 2024-12-20 (Bugs & UX Improvements)
+- Q: ¿Debe ser editable el total cuando hay items? → A: **Bloquear Total**: Si hay items, el campo Total es read-only (suma de items). Solo es editable si no hay items.
+- Q: ¿Qué hace el botón de editar en el listado? → A: **Unificado**: Abre siempre el diálogo de edición unificado, donde se pueden editar nombre, monto (si no hay items) y gestionar items.
+- Q: ¿Valor por defecto del monto? → A: **Cero**: Si no se carga nada, es $0.
+- Q: ¿Cómo mejorar la transición de Monto Manual a Items? → A: **Conversión Automática**: Si hay un monto manual y se agrega el primer item, convertir ese monto en el primer item (ej. "Gasto Total") para no perderlo.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -29,12 +35,14 @@ Como usuario que organiza los gastos de un grupo, quiero poder agregar un partic
 1. **Given** el usuario está en el formulario de añadir participante, **When** agrega el nombre "Juan" y añade 3 items (Cena: $50, Taxi: $20, Propina: $10), **Then** el sistema calcula automáticamente el total ($80) y muestra al participante en la lista con ese monto.
 2. **Given** el usuario está agregando items a un participante, **When** agrega un item sin descripción o sin monto, **Then** el sistema indica que ambos campos son obligatorios y no permite guardar el item incompleto.
 3. **Given** el usuario tiene items agregados para un participante, **When** decide eliminar uno de los items antes de guardar, **Then** el item se elimina de la lista y el total se recalcula automáticamente.
+4. **Given** el usuario ha agregado al menos un item, **When** intenta modificar el campo de "Total" manualmente, **Then** el campo está deshabilitado o es de solo lectura.
+5. **Given** el usuario crea un participante sin ingresar monto, **Then** el sistema asigna automáticamente $0.
 
 ---
 
 ### User Story 2 - Ver desglose de gastos de un participante (Priority: P2)
 
-Como usuario que revisa los gastos del grupo, quiero poder ver el desglose detallado de los items que componen el gasto total de cada participante, para entender exactamente en qué se gastó el dinero.
+Como usuario que revisa los gastos del grupo, quiero poder ver el desglose detallado de los items que componen el Gasto Total de cada participante, para entender exactamente en qué se gastó el dinero.
 
 **Why this priority**: Complementa la P1 permitiendo revisar la información ingresada. Es esencial para la transparencia y verificación de gastos, pero depende de que primero exista la capacidad de ingresar items.
 
@@ -42,14 +50,14 @@ Como usuario que revisa los gastos del grupo, quiero poder ver el desglose detal
 
 **Acceptance Scenarios**:
 
-1. **Given** existe un participante "María" con 3 items registrados, **When** el usuario accede a la página de detalles de María, **Then** ve la lista de todos sus items con descripción, monto individual y el total calculado.
+1. **Given** existe un participante "María" con 3 items registrados, **When** el usuario abre el diálogo de edición de María, **Then** ve la lista de todos sus items con descripción, monto individual y el total calculado.
 2. **Given** el usuario está viendo la lista de participantes, **When** observa un participante con items, **Then** puede ver un indicador visual (ej. badge, icono) que muestra que ese participante tiene un desglose disponible, y puede hacer clic para acceder a sus detalles.
 
 ---
 
 ### User Story 3 - Editar items de un participante existente (Priority: P3)
 
-Como usuario que detecta un error en los gastos registrados, quiero poder editar, agregar o eliminar items de un participante ya guardado mediante un modal que reutilice el formulario de creación, para corregir errores sin tener que eliminar y recrear al participante.
+Como usuario que detecta un error en los gastos registrados, quiero poder editar, agregar o eliminar items de un participante ya guardado mediante un modal unificado, para corregir errores sin tener que eliminar y recrear al participante.
 
 **Why this priority**: Mejora la usabilidad pero no es crítico para el funcionamiento básico. Los usuarios pueden eliminar y recrear participantes como workaround.
 
@@ -60,6 +68,22 @@ Como usuario que detecta un error en los gastos registrados, quiero poder editar
 1. **Given** existe un participante "Carlos" con items, **When** el usuario hace clic en "Editar" y modifica el monto de uno de sus items en el modal, **Then** al guardar, el total del participante se recalcula automáticamente.
 2. **Given** existe un participante con items, **When** el usuario agrega un nuevo item desde el modal de edición, **Then** el item aparece en el desglose y el total se actualiza.
 3. **Given** existe un participante con múltiples items, **When** el usuario elimina un item desde el modal, **Then** el item desaparece del desglose y el total se recalcula.
+4. **Given** el usuario está en el listado de participantes, **When** hace clic en editar un participante que TIENE items, **Then** se abre el modal de edición mostrando los items.
+5. **Given** el usuario está en el listado de participantes, **When** hace clic en editar un participante que NO tiene items, **Then** se abre el modal de edición permitiendo agregar items o editar el monto total.
+
+---
+
+### User Story 4 - Desglosar monto existente (Priority: P2)
+
+Como usuario que ya cargó un monto total, quiero poder desglosarlo en items sin perder el valor original, para detallar los gastos posteriormente.
+
+**Why this priority**: Mejora significativamente la experiencia de usuario al permitir una transición fluida entre carga rápida (solo total) y carga detallada.
+
+**Independent Test**: Crear participante con monto manual. Luego entrar a editar/agregar items y verificar que el monto original se preserva como un item.
+
+**Acceptance Scenarios**:
+
+1. **Given** un participante con monto manual de $100 y 0 items, **When** el usuario decide agregar items (ej. entrando al modal de items), **Then** el sistema pre-carga un primer item con valor $100 y descripción sugerida (ej. "Gasto Total") para que el total se mantenga igual.
 
 ---
 
@@ -79,18 +103,23 @@ R: El sistema NO DEBE aceptar montos negativos. Solo se permiten gastos positivo
 - **FR-001**: El sistema DEBE permitir agregar múltiples items a un participante durante su creación.
 - **FR-002**: Cada item DEBE contener un identificador único (generado automáticamente por el sistema), una descripción (texto obligatorio, máximo 100 caracteres) y un monto (número obligatorio, permite decimales, NO permite negativos).
 - **FR-003**: El sistema DEBE calcular automáticamente el total del participante como la suma de los montos de todos sus items.
-- **FR-004**: El sistema DEBE mostrar el desglose de items en la página de detalles (ParticipantDetailsPage) cuando el usuario accede a un participante que tiene items.
+- **FR-004**: El sistema DEBE mostrar el desglose de items en el diálogo de edición cuando el usuario accede a un participante que tiene items.
 - **FR-005**: El sistema DEBE permitir eliminar items durante la creación de un participante, recalculando el total automáticamente.
 - **FR-006**: El sistema DEBE validar que cada item tenga descripción y monto antes de permitir su adición.
 - **FR-007**: El sistema DEBE permitir agregar un participante sin items (total $0) para mantener compatibilidad con el flujo actual.
-- **FR-008**: El sistema DEBE permitir editar los items de un participante existente utilizando una ventana modal que contenga el formulario completo.
-- **FR-009**: El sistema DEBE mostrar un indicador visual (ej. badge, icono) en la lista de participantes cuando un participante tiene items desglosados, para que el usuario sepa que puede acceder a más detalles.
+- **FR-008**: El sistema DEBE permitir editar los items de un participante existente utilizando una ventana modal unificada.
+- **FR-009**: El sistema DEBE mostrar un indicador visual (ej. badge, icono) en la lista de participantes cuando un participante tiene items desglosados.
 - **FR-010**: El sistema DEBE mantener la precisión de 2 decimales en todos los cálculos de montos.
+- **FR-011**: El campo de "Total" debe ser editable manualmente SOLO si el participante no tiene items agregados.
+- **FR-012**: Si se agregan items, el campo "Total" pasa a ser de solo lectura y muestra la suma de los items.
+- **FR-013**: Al agregar un nuevo participante, si no se especifica monto, se asume 0 por defecto.
+- **FR-014**: En el listado de participantes, el botón de editar debe abrir el modal unificado de edición.
+- **FR-015**: (UX Desglose) Si un usuario ingresó un monto total manual y decide agregar items, el sistema debe sugerir o convertir automáticamente ese monto manual en el primer item (ej. con descripción "Gasto Total") para no perder el valor ingresado.
 
 ### Key Entities
 
 - **Item**: Representa un gasto individual dentro del total de un participante. Contiene un identificador único (ID), una descripción que explica el concepto del gasto y un monto numérico positivo. El ID permite distinguir items incluso si tienen descripción y monto idénticos. Un item siempre pertenece a un único participante.
-- **Participant** (modificado): Estructura extendida que contiene: nombre, y un array `items` que puede estar vacío (para participantes sin gastos desglosados) o contener uno o más items. El monto total se calcula como la suma de los montos de todos los items en el array. Si el array está vacío, el total es $0.
+- **Participant** (modificado): Estructura extendida que contiene: nombre, y un array `items` que puede estar vacío (para participantes sin gastos desglosados) o contener uno o más items. El monto total se calcula como la suma de los montos de todos los items en el array. Si el array está vacío, el total es un valor manual editable (por defecto 0).
 
 ## Assumptions
 

@@ -53,6 +53,19 @@ const AddParticipantForm = () => {
 
   const isAmountReadOnly = items.length > 0;
 
+  const getInitialItemsForDialog = () => {
+    if (items.length > 0) return items;
+    const currentAmount = parseFloat(amount);
+    if (!isNaN(currentAmount) && currentAmount > 0) {
+      return [{
+        id: crypto.randomUUID(),
+        description: 'Gasto Total',
+        amount: currentAmount
+      }];
+    }
+    return [];
+  };
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -81,7 +94,6 @@ const AddParticipantForm = () => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                required
                 readOnly={isAmountReadOnly}
                 className={isAmountReadOnly ? 'bg-muted' : ''}
               />
@@ -109,7 +121,7 @@ const AddParticipantForm = () => {
         <ItemManagerDialog
           open={isItemDialogOpen}
           onOpenChange={setIsItemDialogOpen}
-          initialItems={items}
+          initialItems={getInitialItemsForDialog()}
           onSave={handleItemsSave}
           title={`Gastos de ${name || 'Participante'}`}
         />

@@ -51,14 +51,16 @@ specs/001-participant-items-breakdown/
 src/
 ├── components/
 │   ├── AddParticipantForm.tsx       # Update to handle items
-│   ├── ParticipantDetailsPage.tsx   # Update to show items
+│   ├── ItemManager.tsx              # New reusable component
+│   ├── ItemManagerDialog.tsx        # Wrapper for AddParticipantForm
+│   ├── ParticipantSummary.tsx       # Update to use unified dialog
 │   └── ui/                          # Existing UI components
 ├── context/
 │   └── ParticipantsContext.tsx      # Update reducer for items
 ├── core/
 │   └── participants.ts              # Update Participant interface
 └── pages/
-    └── ParticipantDetailsPage.tsx   # Update to display breakdown
+    └── (ParticipantDetailsPage.tsx deleted)
 ```
 
 **Structure Decision**: Modifying existing files in `src/` to accommodate the new data model and UI requirements.
@@ -68,3 +70,21 @@ src/
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
 N/A
+
+## Refinement Strategy (2025-12-20)
+
+We are refining the feature to improve UX and fix bugs. Key changes include:
+
+1.  **Lock Total Amount**: Modify `AddParticipantForm` to make the "Total" input read-only when `items.length > 0`.
+2.  **Edit Button Logic**: Update `ParticipantsList` to check if a participant has items. If so, open the items dialog; otherwise, allow direct edit.
+3.  **Default Amount**: Ensure new participants default to $0.
+4.  **UX: Convert Total to Item**: In `AddParticipantForm`, if a user has entered a manual total and then clicks "Add Items", automatically create a first item with the current manual total.
+
+## Refactor: Unified Dialogs (2025-12-20)
+
+To improve UX and remove redundant screens, we unified the participant editing experience:
+
+1.  **Unified Edit Dialog**: `ParticipantSummary` now uses a single dialog for editing name, amount, and items. The "Manage Items" secondary popup was removed to avoid overlay issues.
+2.  **ItemManager Component**: Extracted item management logic into a reusable `ItemManager` component used by both `AddParticipantForm` (via `ItemManagerDialog`) and `ParticipantSummary`.
+3.  **Remove Details Page**: Deleted `ParticipantDetailsPage` and its route, as all functionality is now available in the unified edit dialog.
+

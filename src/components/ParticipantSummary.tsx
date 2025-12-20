@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Participant } from '@/core/participants';
+import { Participant, Item } from '@/core/participants';
 import { useParticipants } from '@/context/ParticipantsContext';
 import { formatMoney } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Pencil, Trash2, List } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import { ItemManager } from '@/components/ItemManager';
 
 interface ParticipantSummaryProps {
   participant: Participant;
@@ -18,6 +18,7 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(participant.name);
   const [editAmount, setEditAmount] = useState(participant.amount.toString());
+  const [editItems, setEditItems] = useState<Item[]>(participant.items || []);
 
   const handleDelete = () => {
     if (confirm(`¿Estás seguro de eliminar a ${participant.name}?`)) {
@@ -28,6 +29,7 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
   const handleEdit = () => {
     setEditName(participant.name);
     setEditAmount(participant.amount.toString());
+    setEditItems(participant.items || []);
     setIsEditing(true);
   };
 
@@ -37,10 +39,22 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
       payload: {
         ...participant,
         name: editName,
-        amount: parseFloat(editAmount),
+        amount: parseFloat(editAmount) || 0,
+        items: editItems,
       },
     });
     setIsEditing(false);
+  };
+
+  const handleItemsChange = (newItems: Item[]) => {
+    setEditItems(newItems);
+    if (newItems.length > 0) {
+      const total = newItems.reduce((sum, item) => sum + item.amount, 0);
+      setEditAmount(total.toFixed(2));
+    } else {
+      // If all items are removed, reset amount to 0 to avoid confusion
+      setEditAmount('0');
+    }
   };
 
   return (
@@ -49,12 +63,10 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
         <CardContent className="flex justify-between items-center p-4">
           <div>
             <h3 className="font-bold text-lg flex items-center gap-2">
-              <Link to={`/participant/${participant.id}`} className="hover:underline flex items-center gap-2">
-                {participant.name}
-                {participant.items && participant.items.length > 0 && (
-                  <List className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Link>
+              {participant.name}
+              {participant.items && participant.items.length > 0 && (
+                <List className="h-4 w-4 text-muted-foreground" />
+              )}
             </h3>
             <p className="text-gray-600">${formatMoney(participant.amount)}</p>
           </div>
@@ -70,7 +82,7 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
       </Card>
 
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Participante</DialogTitle>
           </DialogHeader>
@@ -83,15 +95,28 @@ const ParticipantSummary: React.FC<ParticipantSummaryProps> = ({ participant }) 
                 onChange={(e) => setEditName(e.target.value)}
               />
             </div>
+            
             <div className="space-y-2">
-              <label htmlFor="edit-amount" className="text-sm font-medium">Monto</label>
+              <label htmlFor="edit-amount" className="text-sm font-medium">Monto Total</label>
               <Input
                 id="edit-amount"
                 type="number"
                 step="0.01"
                 value={editAmount}
                 onChange={(e) => setEditAmount(e.target.value)}
+                readOnly={editItems.length > 0}
+                className={editItems.length > 0 ? 'bg-muted' : ''}
               />
+              {editItems.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  El monto es calculado automáticamente basado en los items.
+                </p>
+              )}
+            </div>
+
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium mb-2">Desglose de Gastos</h4>
+              <ItemManager items={editItems} onItemsChange={handleItemsChange} />
             </div>
           </div>
           <DialogFooter>

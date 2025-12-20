@@ -51,6 +51,14 @@
 - [x] T014 Truncate long descriptions in `src/pages/ParticipantDetailsPage.tsx`
 - [x] T015 Verify negative amounts are blocked in `src/components/ItemManagerDialog.tsx`
 
+## Phase 7: Refinement & Bug Fixes (2025-12-20)
+*Goal: Address bugs and UX issues identified in testing.*
+
+- [x] T016 [Bug] Lock "Total" field in `AddParticipantForm` when items are present (read-only).
+- [x] T017 [Bug] Ensure default amount is 0 when creating a participant without input.
+- [x] T018 [UX] Update `ParticipantsList` edit button: Open items dialog if items exist, otherwise allow total edit.
+- [x] T019 [UX] Implement "Convert Total to Item" logic: When adding items to a participant with a manual total, create an initial item with that amount.
+
 ## Dependencies
 
 - **Phase 2** blocks **Phase 3, 4, 5** (Data model changes required first)
