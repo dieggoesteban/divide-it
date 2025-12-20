@@ -4,11 +4,29 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ItemManagerDialog } from '@/components/ItemManagerDialog';
+import { Item } from '@/core/participants';
+import { ListPlus } from 'lucide-react';
 
 const AddParticipantForm = () => {
   const { state, dispatch } = useParticipants();
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
+  const [items, setItems] = useState<Item[]>([]);
+  const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
+
+  const handleItemsSave = (newItems: Item[]) => {
+    setItems(newItems);
+    if (newItems.length > 0) {
+      const total = newItems.reduce((sum, item) => sum + item.amount, 0);
+      setAmount(total.toFixed(2));
+    } else {
+      // If items cleared, keep the amount or reset? 
+      // Let's reset if it was calculated, but maybe user wants to switch to manual.
+      // For now, let's just update amount if items exist.
+      // If items are cleared, we enable manual input again.
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +39,8 @@ const AddParticipantForm = () => {
     const participant = {
       id: state.idCounter.toString(),
       name,
-      amount: parseFloat(amount),
+      amount: parseFloat(amount) || 0,
+      items: items,
     };
 
     dispatch({ type: 'ADD_PARTICIPANT', payload: participant });
@@ -29,6 +48,22 @@ const AddParticipantForm = () => {
 
     setName('');
     setAmount('');
+    setItems([]);
+  };
+
+  const isAmountReadOnly = items.length > 0;
+
+  const getInitialItemsForDialog = () => {
+    if (items.length > 0) return items;
+    const currentAmount = parseFloat(amount);
+    if (!isNaN(currentAmount) && currentAmount > 0) {
+      return [{
+        id: crypto.randomUUID(),
+        description: 'Gasto Total',
+        amount: currentAmount
+      }];
+    }
+    return [];
   };
 
   return (
@@ -50,20 +85,48 @@ const AddParticipantForm = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="amount">Monto</Label>
-            <Input
-              id="amount"
-              type="number"
-              step="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
-              required
-            />
+            <div className="flex gap-2">
+              <Input
+                id="amount"
+                type="number"
+                step="0.01"
+                min="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.00"
+                readOnly={isAmountReadOnly}
+                className={isAmountReadOnly ? 'bg-muted' : ''}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsItemDialogOpen(true)}
+                title="Desglosar gastos"
+                aria-label="Desglosar gastos en items"
+              >
+                <ListPlus className="h-4 w-4 mr-2" />
+                {items.length > 0 ? `${items.length} Items` : 'Desglosar'}
+              </Button>
+            </div>
+            {isAmountReadOnly && (
+              <p className="text-xs text-muted-foreground">
+                El monto es calculado automáticamente basado en los items.
+              </p>
+            )}
           </div>
           <Button type="submit" className="w-full">
             Añadir participante
           </Button>
         </form>
+
+        <ItemManagerDialog
+          open={isItemDialogOpen}
+          onOpenChange={setIsItemDialogOpen}
+          initialItems={getInitialItemsForDialog()}
+          onSave={handleItemsSave}
+          title={`Gastos de ${name || 'Participante'}`}
+          participants={state.participants}
+        />
       </CardContent>
     </Card>
   );

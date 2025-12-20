@@ -1,8 +1,26 @@
+export interface Item {
+  id: string;
+  description: string;
+  amount: number;
+  excludedParticipantIds?: string[]; // IDs of participants who do NOT share this expense
+}
+
+/**
+ * Helper to check if a participant is included in an item.
+ * Note: The data model uses 'excludedParticipantIds' (negative logic),
+ * so a participant is included if they are NOT in that list.
+ */
+export const isParticipantIncluded = (item: Item, participantId: string): boolean => {
+  return !item.excludedParticipantIds?.includes(participantId);
+};
+
 export interface Participant {
   id: string;
   name: string;
+  items: Item[];
   amount: number;
   netAmount?: number;
+  fairShare?: number; // What this participant should have paid (their debt/quota)
 }
 
 export interface Transaction {
@@ -14,7 +32,11 @@ export interface Transaction {
 export const getTotal = (participants: Participant[]): number => {
   if (participants.length > 0) {
     return participants
-      .map((p) => (typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount))
+      .map((p) => {
+        // Convert string amounts to numbers
+        const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
+        return amount;
+      })
       .reduce((acc, p) => acc + p, 0);
   } else {
     return 0;
@@ -34,13 +56,71 @@ export const getNetAmount = (participant: Participant, totalIndividual: number):
   return amount - totalIndividual;
 };
 
+/**
+ * Calculates fairShare (what each participant should pay) and netAmount (balance)
+ * considering item exclusions.
+ * 
+ * New Logic:
+ * - For each item, split its cost among non-excluded participants
+ * - Accumulate "fairShare" (what one should have paid) for each participant
+ * - netAmount = paidAmount - fairShare
+ */
 export const getParticipantsWithNetAmountCalc = (participants: Participant[]): Participant[] => {
-  const totalIndividual = getTotalIndividual(participants);
-  // Deep copy to avoid mutating the original array if needed, though map is cleaner
-  const participantsEdited: Participant[] = JSON.parse(JSON.stringify(participants));
+  if (participants.length === 0) {
+    return [];
+  }
+
+  // Deep copy to avoid mutating the original array
+  const participantsEdited: Participant[] = structuredClone(participants);
   
+  // Initialize fairShare for all participants
   participantsEdited.forEach((p) => {
-    p.netAmount = getNetAmount(p, totalIndividual);
+    p.fairShare = 0;
+  });
+
+  // Create a map for O(1) participant lookup
+  const participantMap = new Map<string, Participant>();
+  participantsEdited.forEach(p => participantMap.set(p.id, p));
+
+  // Get all participant IDs for reference
+  const allParticipantIds = participantsEdited.map(p => p.id);
+
+  // Collect all items from all participants
+  const allItems: { item: Item; ownerId: string }[] = [];
+  participantsEdited.forEach((p) => {
+    p.items.forEach((item) => {
+      allItems.push({ item, ownerId: p.id });
+    });
+  });
+
+  // Calculate fairShare for each item
+  allItems.forEach(({ item }) => {
+    const excludedIds = item.excludedParticipantIds || [];
+    
+    // Get participants who share this item (not excluded)
+    const includedParticipantIds = allParticipantIds.filter(id => !excludedIds.includes(id));
+    
+    if (includedParticipantIds.length === 0) {
+      console.warn(`Item "${item.description}" (ID: ${item.id}) has no included participants. It will not contribute to fairShare calculations.`);
+      return;
+    }
+
+    // Calculate cost per included participant
+    const costPerParticipant = item.amount / includedParticipantIds.length;
+
+    // Add to each included participant's fairShare
+    includedParticipantIds.forEach((participantId) => {
+      const participant = participantMap.get(participantId);
+      if (participant) {
+        participant.fairShare = (participant.fairShare || 0) + costPerParticipant;
+      }
+    });
+  });
+
+  // Calculate netAmount for each participant: paid - fairShare
+  participantsEdited.forEach((p) => {
+    const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
+    p.netAmount = amount - (p.fairShare || 0);
   });
   
   return participantsEdited;
@@ -77,8 +157,8 @@ export const getSuggestedTransactions = (
       (min.netAmount || 0) < (participant.netAmount || 0) ? min : participant
     );
 
-    let maxNetAmount = participantWithMaxNetAmount.netAmount || 0;
-    let minNetAmount = participantWithMinNetAmount.netAmount || 0;
+    const maxNetAmount = participantWithMaxNetAmount.netAmount || 0;
+    const minNetAmount = participantWithMinNetAmount.netAmount || 0;
 
     // Convert to whole numbers to avoid floating point issues
     const maxNetAmountWhole = toWholeNumber(maxNetAmount);

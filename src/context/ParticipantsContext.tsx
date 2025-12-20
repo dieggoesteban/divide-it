@@ -31,9 +31,28 @@ const participantsReducer = (state: ParticipantsState, action: Action): Particip
         ),
       };
     case 'REMOVE_PARTICIPANT':
+      // Clean up excludedParticipantIds from all items when a participant is removed
+      const removedId = action.payload.id;
+      const updatedParticipants = state.participants
+        .filter((p) => p.id !== removedId)
+        .map((p) => {
+          const updatedItems = p.items.map((item) => {
+            const newExcluded = item.excludedParticipantIds?.filter(
+              (id) => id !== removedId
+            );
+            return {
+              ...item,
+              excludedParticipantIds: newExcluded && newExcluded.length > 0 ? newExcluded : undefined,
+            };
+          });
+          return {
+            ...p,
+            items: updatedItems,
+          };
+        });
       return {
         ...state,
-        participants: state.participants.filter((p) => p.id !== action.payload.id),
+        participants: updatedParticipants,
       };
     case 'CLEAR_PARTICIPANTS':
       return { ...state, participants: [] };

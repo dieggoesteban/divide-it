@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HomePage from '@/pages/HomePage';
 import ResultsPage from '@/pages/ResultsPage';
-import ParticipantDetailsPage from '@/pages/ParticipantDetailsPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 function App() {
@@ -15,7 +14,6 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/results" element={<ResultsPage />} />
-            <Route path="/participant/:id" element={<ParticipantDetailsPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
