@@ -5,6 +5,15 @@ export interface Item {
   excludedParticipantIds?: string[]; // IDs of participants who do NOT share this expense
 }
 
+/**
+ * Helper to check if a participant is included in an item.
+ * Note: The data model uses 'excludedParticipantIds' (negative logic),
+ * so a participant is included if they are NOT in that list.
+ */
+export const isParticipantIncluded = (item: Item, participantId: string): boolean => {
+  return !item.excludedParticipantIds?.includes(participantId);
+};
+
 export interface Participant {
   id: string;
   name: string;
@@ -24,7 +33,7 @@ export const getTotal = (participants: Participant[]): number => {
   if (participants.length > 0) {
     return participants
       .map((p) => {
-        // Ensure amount is a number and consistent with items if present
+        // Convert string amounts to numbers
         const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
         return amount;
       })
@@ -62,12 +71,16 @@ export const getParticipantsWithNetAmountCalc = (participants: Participant[]): P
   }
 
   // Deep copy to avoid mutating the original array
-  const participantsEdited: Participant[] = JSON.parse(JSON.stringify(participants));
+  const participantsEdited: Participant[] = structuredClone(participants);
   
   // Initialize fairShare for all participants
   participantsEdited.forEach((p) => {
     p.fairShare = 0;
   });
+
+  // Create a map for O(1) participant lookup
+  const participantMap = new Map<string, Participant>();
+  participantsEdited.forEach(p => participantMap.set(p.id, p));
 
   // Get all participant IDs for reference
   const allParticipantIds = participantsEdited.map(p => p.id);
@@ -88,7 +101,7 @@ export const getParticipantsWithNetAmountCalc = (participants: Participant[]): P
     const includedParticipantIds = allParticipantIds.filter(id => !excludedIds.includes(id));
     
     if (includedParticipantIds.length === 0) {
-      // This should not happen if validation is in place, but handle gracefully
+      console.warn(`Item "${item.description}" (ID: ${item.id}) has no included participants. It will not contribute to fairShare calculations.`);
       return;
     }
 
@@ -97,7 +110,7 @@ export const getParticipantsWithNetAmountCalc = (participants: Participant[]): P
 
     // Add to each included participant's fairShare
     includedParticipantIds.forEach((participantId) => {
-      const participant = participantsEdited.find(p => p.id === participantId);
+      const participant = participantMap.get(participantId);
       if (participant) {
         participant.fairShare = (participant.fairShare || 0) + costPerParticipant;
       }
@@ -144,8 +157,8 @@ export const getSuggestedTransactions = (
       (min.netAmount || 0) < (participant.netAmount || 0) ? min : participant
     );
 
-    let maxNetAmount = participantWithMaxNetAmount.netAmount || 0;
-    let minNetAmount = participantWithMinNetAmount.netAmount || 0;
+    const maxNetAmount = participantWithMaxNetAmount.netAmount || 0;
+    const minNetAmount = participantWithMinNetAmount.netAmount || 0;
 
     // Convert to whole numbers to avoid floating point issues
     const maxNetAmountWhole = toWholeNumber(maxNetAmount);

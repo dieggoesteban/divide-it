@@ -19,9 +19,10 @@ The calculation becomes tedious when there are multiple debtors and creditors. Y
 
 ## What this app offers
 
-*   **Expense Entry**: Easily input the total expenses for each participant.
-*   **Automatic Calculation**: Instantly computes the total group expense and the Individual Calculated Amount (ICA).
-*   **Balance Visualization**: Clearly shows each participant's balance—whether they are a debtor or a creditor.
+*   **Itemized Expense Entry**: Add participants with detailed breakdowns—each participant can have multiple items with descriptions and amounts (e.g., "Dinner: $50", "Taxi: $20"). No need to manually calculate totals beforehand.
+*   **Selective Participation**: Exclude specific participants from individual items for fair splitting. For example, a vegetarian doesn't pay for meat, or a non-drinker doesn't pay for alcohol.
+*   **Automatic Calculation**: Instantly computes the total group expense and each participant's fair share based on which items they're included in.
+*   **Balance Visualization**: Clearly shows each participant's balance—whether they are a debtor or a creditor—with itemized breakdowns.
 *   **Smart Settlement**: Suggests the most efficient way to settle debts, indicating exactly who needs to pay whom and how much to minimize the number of transactions.
 
 ## Live Demo

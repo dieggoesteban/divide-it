@@ -113,7 +113,7 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
             }}
           />
         </div>
-        <Button onClick={handleAddItem} size="icon" type="button">
+        <Button onClick={handleAddItem} size="icon" type="button" aria-label="Agregar item">
           <Plus className="h-4 w-4" />
         </Button>
       </div>
@@ -157,6 +157,7 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
                         size="icon"
                         className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"
                         onClick={() => handleRemoveItem(item.id)}
+                        aria-label={`Eliminar ${item.description}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -177,6 +178,7 @@ export const ItemManager: React.FC<ItemManagerProps> = ({
                             checked={!item.excludedParticipantIds?.includes(p.id)}
                             onChange={() => handleToggleItemParticipant(item.id, p.id)}
                             className="rounded"
+                            aria-label={`Incluir a ${p.name} en este item`}
                           />
                           <span>{p.name}</span>
                         </label>

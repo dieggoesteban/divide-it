@@ -102,6 +102,7 @@ const AddParticipantForm = () => {
                 variant="outline"
                 onClick={() => setIsItemDialogOpen(true)}
                 title="Desglosar gastos"
+                aria-label="Desglosar gastos en items"
               >
                 <ListPlus className="h-4 w-4 mr-2" />
                 {items.length > 0 ? `${items.length} Items` : 'Desglosar'}

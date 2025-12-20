@@ -35,15 +35,21 @@ const participantsReducer = (state: ParticipantsState, action: Action): Particip
       const removedId = action.payload.id;
       const updatedParticipants = state.participants
         .filter((p) => p.id !== removedId)
-        .map((p) => ({
-          ...p,
-          items: p.items.map((item) => ({
-            ...item,
-            excludedParticipantIds: item.excludedParticipantIds?.filter(
+        .map((p) => {
+          const updatedItems = p.items.map((item) => {
+            const newExcluded = item.excludedParticipantIds?.filter(
               (id) => id !== removedId
-            ),
-          })),
-        }));
+            );
+            return {
+              ...item,
+              excludedParticipantIds: newExcluded && newExcluded.length > 0 ? newExcluded : undefined,
+            };
+          });
+          return {
+            ...p,
+            items: updatedItems,
+          };
+        });
       return {
         ...state,
         participants: updatedParticipants,
